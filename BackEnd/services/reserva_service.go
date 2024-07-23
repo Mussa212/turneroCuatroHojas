@@ -40,6 +40,7 @@ func (s *reservaService) GetReservaById(id int) (dto.ReservaDto, e.ApiError) {
 	reservaDto.Fecha = reserva.Fecha
 	reservaDto.UserId = reserva.UserId
 	reservaDto.Id = reserva.ID
+	reserva.Tipo = reserva.Tipo
 
 	return reservaDto, nil
 }
@@ -55,6 +56,7 @@ func (s *reservaService) GetReservas() (dto.ReservasDto, e.ApiError) {
 		reservaDto.Fecha = reserva.Fecha
 		reservaDto.UserId = reserva.UserId
 		reservaDto.Id = reserva.ID
+		reservaDto.Tipo = reserva.Tipo
 		reservasDto = append(reservasDto, reservaDto)
 	}
 
@@ -67,6 +69,7 @@ func (s *reservaService) InsertReserva(reservaDto dto.ReservaDto) (dto.ReservaDt
 
 	reserva.Fecha = reservaDto.Fecha
 	reserva.UserId = reservaDto.UserId
+	reserva.Tipo = reservaDto.Tipo
 
 	reserva = reservaClient.ReservaClient.InsertReserva(reserva)
 
@@ -86,6 +89,7 @@ func (s *reservaService) GetReservasByUser(userId int) (dto.ReservasDto, e.ApiEr
 		reservaDto.Fecha = reserva.Fecha
 		reservaDto.UserId = reserva.UserId
 		reservaDto.Id = reserva.ID
+		reservaDto.Tipo = reserva.Tipo
 		reservasDto = append(reservasDto, reservaDto)
 	}
 
@@ -107,6 +111,7 @@ func (s *reservaService) GetReservasByFecha(reservaDto dto.ReservaDto) (dto.Rese
 		reservaDto.Fecha = reservaDto.Fecha
 		reservaDto.UserId = reserva.UserId
 		reservaDto.Id = reserva.ID
+		reservaDto.Tipo = reserva.Tipo
 		reservasDto = append(reservasDto, reservaDto)
 	}
 
@@ -128,6 +133,7 @@ func (s *reservaService) GetReservasByFechaAndUser(reservaDto dto.ReservaDto) (d
 		reservaDto.Fecha = reserva.Fecha
 		reservaDto.UserId = reserva.UserId
 		reservaDto.Id = reserva.ID
+		reservaDto.Tipo = reserva.Tipo
 		reservasDto = append(reservasDto, reservaDto)
 	}
 

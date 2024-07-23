@@ -52,23 +52,6 @@ func (c *reservaClient) InsertReserva(reserva model.Reserva) model.Reserva {
 	return reserva
 }
 
-/*
-func (c *reservaClient) GetRooms(fecha time.Time, reserva model.Reserva) int {
-	var count int
-
-	err := Db.Table("reservas").
-		Select("COUNT(reservas.id)").
-		Joins("JOIN hotels ON reservas.hotel_id = hotels.id").
-		Where("? >= reservas.fecha_in AND ? <= reservas.fecha_out AND ? = hotels.id", fecha, fecha, reserva.HotelId).
-		Count(&count).Error
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return count
-} */
-
 func (c *reservaClient) GetReservasByUser(userId int) model.Reservas {
 	var reservas model.Reservas
 	Db.Where("user_id = ?", userId).Find(&reservas)

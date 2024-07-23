@@ -2,13 +2,12 @@ package controller
 
 import (
 	"BackEnd/dto"
+	jwtL "BackEnd/jwt"
 	service "BackEnd/services"
-	"net/http"
-	"strconv"
-
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"net/http"
+	"strconv"
 )
 
 func GetReservaById(c *gin.Context) {
@@ -50,11 +49,7 @@ func ReservaInsert(c *gin.Context) {
 		return
 	}
 
-	secret := "secreto"
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
-	})
+	token, err := jwtL.VerifyToken(tokenString)
 
 	if err != nil || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -108,11 +103,7 @@ func GetReservasByFecha(c *gin.Context) {
 		return
 	}
 
-	secret := "secreto"
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
-	})
+	token, err := jwtL.VerifyToken(tokenString)
 
 	if err != nil || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -151,11 +142,7 @@ func GetReservasByFechaAndUser(c *gin.Context) {
 		return
 	}
 
-	secret := "secreto"
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
-	})
+	token, err := jwtL.VerifyToken(tokenString)
 
 	if err != nil || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{
@@ -195,11 +182,7 @@ func GetReservasDisponiblesByFecha(c *gin.Context) {
 		return
 	}
 
-	secret := "secreto"
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
-	})
+	token, err := jwtL.VerifyToken(tokenString)
 
 	if err != nil || !token.Valid {
 		c.JSON(http.StatusUnauthorized, gin.H{

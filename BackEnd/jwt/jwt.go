@@ -2,8 +2,22 @@ package jwt
 
 import (
 	"BackEnd/dto"
+	"crypto/rand"
+	"encoding/base64"
 	"github.com/dgrijalva/jwt-go"
+	log "github.com/sirupsen/logrus"
+	"time"
 )
+
+var Secreto string
+
+func GenerateSecretJWT() (string, error) {
+	bytes := make([]byte, 64)
+	if _, err := rand.Read(bytes); err != nil {
+		return "", err
+	}
+	return base64.URLEncoding.EncodeToString(bytes), nil
+}
 
 func GenerateUserToken(userDto dto.UserDto) (string, error) {
 	claims := jwt.MapClaims{
@@ -12,11 +26,13 @@ func GenerateUserToken(userDto dto.UserDto) (string, error) {
 		"last_name":  userDto.LastName,
 		"user_email": userDto.UserEmail,
 		"tipo":       userDto.Tipo,
+		"dni":        userDto.DNI,
+		"telefono":   userDto.Telefono,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	secret := "secreto"
-	signedToken, err := token.SignedString([]byte(secret))
+
+	signedToken, err := token.SignedString([]byte(Secreto))
 
 	if err != nil {
 		return "", err
@@ -26,10 +42,8 @@ func GenerateUserToken(userDto dto.UserDto) (string, error) {
 }
 
 func VerifyToken(tokenString string) (*jwt.Token, error) {
-	secret := "secreto"
-
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
+		return []byte(Secreto), nil
 	})
 
 	if err != nil {
@@ -39,20 +53,18 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
-func GenerateReservaToken(reservaDto dto.ReservaDto) (string, error) {
-	claims := jwt.MapClaims{
-		"id":      reservaDto.Id,
-		"user_id": reservaDto.UserId,
-		"fecha":   reservaDto.Fecha,
+func UpdateSecretPeriodically() {
+	ticker := time.NewTicker(24 * time.Hour)
+	defer ticker.Stop()
+	var err error
+
+	for {
+		select {
+		case <-ticker.C:
+			Secreto, err = GenerateSecretJWT() // 32 bytes secret
+			if err != nil {
+				log.Fatalf("Error generating secret: %v", err)
+			}
+		}
 	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	secret := "secreto"
-	signedToken, err := token.SignedString([]byte(secret))
-
-	if err != nil {
-		return "", err
-	}
-
-	return signedToken, nil
 }
